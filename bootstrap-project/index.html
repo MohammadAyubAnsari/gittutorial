@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
+    <script defer src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="container">  
+    <form id="form">
+      
+        <label for="ExpenseAmount" class="form-label">Choose ExpenseAmount:</label>
+        <input type="number" id="ExpenseAmount" name="ExpanseAmount" placeholder="EnterAmount" class="form-control" required>
+        <label for="Description" class="form-label">Choose Description:</label>
+        <input type="text" id="Description" name="Description" placeholder="item-description" class="form-control" required>
+        <label for="Category" class="form-label">Choose a Category:</label>
+
+        <script>  
+            function favTutorial() {  
+            var mylist = document.getElementById("myList");  
+            document.getElementById("myList").value = mylist.options[mylist.selectedIndex].text;  
+            }  
+        </script>  
+
+        <select  name="Category" id = "myList" onchange = "favTutorial()" >  
+            <option> --Category-- </option>  
+            <option> Fuel </option>  
+            <option> Food </option>  
+            <option> Medical </option>  
+            <option> Electricity </option>  
+            </select>  
+            
+        <button>AddExpense</button>        
+    </form>
+  </div>  
+    <ul id="listOfUsers"></ul>
+    <script>
+      let form=document.getElementById('form'); 
+      form.addEventListener('submit',function(event){
+        event.preventDefault()
+           const amount=event.target.ExpanseAmount.value;
+           const items=event.target.Description.value;
+           const catg=event.target.Category.value;
+            let myObj={
+                Amount:amount,
+                Item:items,
+                Catg:catg
+            };
+            localStorage.setItem(myObj.Item,JSON.stringify(myObj));
+            showsNewUserOnScreen(myObj);
+    })
+
+    function showsNewUserOnScreen(user){
+      document.getElementById('ExpenseAmount').value="";
+      document.getElementById('Description').value="";
+     
+      if(localStorage.getItem(user.Description) != null){
+        removeUserFromScreen(user.Description);
+      }
+      const parentNode=document.getElementById('listOfUsers');
+      const children=`<li id="${user.Item}"> ${user.Amount}- ${user.Item}-${user.Catg}
+                      <button onclick=deleteUser('${user.Item}')>DeleteExpense</button> 
+                      <button onclick=editUser('${user.Amount}','${user.Item}')>EditExpense</button> 
+                      </li>`;
+      parentNode.innerHTML=children+parentNode.innerHTML;
+    }
+
+    //deleteUser
+    function deleteUser(Description){
+         localStorage.removeItem(Description);
+         removeUserFromScreen(Description);
+    }
+
+    //editUser
+    function editUser(name,Description){
+        document.getElementById('ExpanseAmount').value=name;
+        document.getElementById('Description').value=Description;
+        
+
+        deleteUser(Description);
+
+    }
+
+
+    function  removeUserFromScreen(Description){
+      const parentNode=document.getElementById('listOfUsers');
+      const childNodeToBeDeleted=document.getElementById(Description);
+      if(childNodeToBeDeleted){
+        parentNode.removeChild(childNodeToBeDeleted);
+      }
+    }
+
+  window.addEventListener("DOMContentLoaded",()=>{
+
+    Object.keys(localStorage).forEach((key) => {
+      stringifiedDetailsOfPeople = localStorage.getItem(key);
+      detailsOfPeople = JSON.parse(stringifiedDetailsOfPeople);
+      showsNewUserOnScreen(detailsOfPeople);
+    });
+
+  })
+
+
+    </script>
+    </body>
+
+</html>
