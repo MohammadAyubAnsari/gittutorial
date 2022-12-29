@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+<!-- <button onclick = "myStop()"> Stopthetimer </button>  -->
+<p id="demo"></p>  
+
+
+<script>
+  var user={ActivityTime: Date.now()}
+
+  const posts=[
+    {title:'Post One',body:'This is post one',createdAt:Date.now()/1000},
+    {title:'Post Two',body:'This is post Two',createdAt:Date.now()/1000}
+];
+
+// function getPost(){
+//     setTimeout(() => {
+//       let output='';
+//       posts.forEach((post,index) => {
+//         output+=`<li>${post.title} created `+(Date.now()/1000 - post.createdAt)+`ago</li>`;
+//       });
+//       document.body.innerHTML = output;
+//     },8000);
+// }
+// getPost();
+
+var intervalId;
+
+function getPost(){
+
+  intervalId=setInterval(() => {
+    let output='';
+    for(let i=0;i<posts.length;i++){
+      let x=(Date.now()/1000 - posts[i].createdAt);
+      output+=`<li>${posts[i].title} created ${x} seconds ago</li>`;
+    }
+    document.getElementById("demo").innerHTML = output;
+  }, 1000);
+ // console.log(intervalId);
+
+}
+
+
+// function myStop(){
+//   clearInterval(intervalId);
+//}
+
+
+function createPost(post){
+    return Promise.all([new Promise((resolve, reject)=> {
+        setTimeout(() => {
+      posts.push(post);
+      console.log(post.title+" got created");
+      const error=false;
+      if(!error){
+        resolve();
+      } else{
+        reject('Error: Something went wrong');
+      }
+
+    },1000);
+    }),updateLastUserActivityTime.call(user)])
+  }
+
+
+  console.log("creating post3")
+ createPost({title:'Post Three',Body:'This is post three',createdAt:Date.now()/1000}).
+ then(getPost).catch(err => console.log(err));
+
+
+ function deletePost(){
+    return new Promise((resolve, reject)=> {
+    setTimeout(() => {
+      const error=posts.length>0?false:true;
+      posts.pop();
+      if(!error){
+        resolve();
+      } else{
+        reject('Error: Something went wrong');
+      }
+
+      getPost();
+
+    },4000);
+  }
+)}
+
+deletePost().then(deletePost).then(deletePost).then(deletePost).catch(err => console.log(err)).then(post4);
+function post4(){
+    console.log("creating post4")
+    createPost({title:'Post four',Body:'This is post four',createdAt:Date.now()/1000}).then(getPost).catch(err => console.log(err));
+    deletePost().then(() => console.log(posts));
+
+}
+
+//Another way of doing above logic
+//  setTimeout(() => {createPost({title:'Post four',Body:'This is post four',createdAt:Date.now()/1000}).then(getPost).catch(err => console.log(err))},9000);
+//  setTimeout(() => {deletePost()},10000);
+
+//Promose.all()
+// const promise1=Promise.resolve('Hello World');
+// const promise2=10;
+// const promise3=new Promise((resolve,reject) => {
+//     setTimeout(resolve,2000,'goodbye')
+// });
+// const promise4=fetch('https://jsonplaceholder.typicode.com/users').then(res => res.json());
+// Promise.all([promise1,promise2,promise3,promise4]).then(values => console.log(values));
+//Promise.all takes an array of references
+
+  // function create4thPost(post,callback){
+  //   setTimeout(() => {
+  //     posts.push(post);
+  //     callback();
+  //   },6000);
+  // }
+  //createPost({title:'Post Four',Body:'This is post four',createdAt:Date.now()/1000},getPost);
+
+//   
+     function updateLastUserActivityTime(){
+        new Promise((resolve, reject)=> {
+        setTimeout(() => {
+        this.ActivityTime= Date.now()/1000 ;
+
+      const error=false;
+      if(!error){
+        resolve();
+      } else{
+        reject('Error: Something went wrong');
+      }
+
+    },1000);
+    });    
+
+    console.log('User Activity Time is '+ this.ActivityTime);
+}
+//     function deletepost(){}
+// 
+
+</script>
+</body>
+</html>
